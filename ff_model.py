@@ -110,7 +110,7 @@ def main():
           train_ds=train_ds,
           validation_ds=validation_ds,
           optimizer=torch.optim.Adam(model.parameters(), 1e-4),
-          num_epochs=100)
+          num_epochs=15)
 
 
 if __name__ == '__main__':
