@@ -26,11 +26,6 @@ def train(train_set, validation_set):
     # print(result)
 
 
-def tag_results():
-    # todo: implement function
-    pass
-
-
 def main():
     train_file_path = r'./data/train.tagged'
     validation_file_path = r'./data/dev.tagged'

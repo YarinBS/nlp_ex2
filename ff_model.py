@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, f1_score
 from torch.utils.data import DataLoader
 from parser import parse_file
 from create_embedding import load_model, generate_ds
@@ -25,14 +25,30 @@ class Net(nn.Module):
         return x
 
 
+def eval_model(model, validation_ds):
+    validation_model_output = []
+    validation_labels = []
+    with torch.no_grad():
+        for idx, data in enumerate(validation_ds, 0):
+            inputs, labels = data
+            inputs = inputs.to(torch.float32)
+            labels = labels.to(torch.float32)
+
+            outputs = model(inputs)
+            validation_model_output += list(torch.argmax(outputs, dim=1).numpy())
+            validation_labels += list(torch.argmax(labels, dim=1).numpy())
+
+    print(f'validation f1: {f1_score(validation_model_output, validation_labels)}')
+
+
 # ---------------------
 def train(model, train_ds, validation_ds, optimizer, num_epochs: int):
     criterion = nn.CrossEntropyLoss()
-    f1_metric = BinaryF1Score()
 
     for epoch in range(num_epochs):  # loop over the dataset multiple times
 
-        train_f1 = []
+        train_model_output = []
+        train_labels = []
         running_loss = 0.0
         for i, data in enumerate(train_ds, 0):
             # get the inputs; data is a list of [inputs, labels]
@@ -50,23 +66,16 @@ def train(model, train_ds, validation_ds, optimizer, num_epochs: int):
 
             # print statistics
             running_loss += loss.item()
-            train_f1.append(f1_metric(outputs, labels).item())
-        print(f'[{epoch + 1}, train loss: {running_loss / i:.3f}, f1: {np.mean(train_f1)}')
+
+            train_model_output += list(torch.argmax(outputs, dim=1).numpy())
+            train_labels += list(torch.argmax(labels, dim=1).numpy())
+
+        print(f'[{epoch + 1}, train loss: {running_loss / i:.3f},'
+              f' f1: {f1_score(train_model_output, train_labels)}')
+        train_model_output = []
+        train_labels = []
         running_loss = 0.0
-        train_f1 = []
-
-        validation_f1 = []
-        validation_loss = 0
-        with torch.no_grad():
-            for idx, data in enumerate(validation_ds, 0):
-                inputs, labels = data
-                inputs = inputs.to(torch.float32)
-                labels = labels.to(torch.float32)
-
-                outputs = model(inputs)
-                validation_loss += criterion(outputs, labels).item()
-                validation_f1.append(f1_metric(outputs, labels).item())
-        print(f'[{epoch + 1}, validation loss: {validation_loss / idx:.3f} f1: {np.mean(validation_f1)}')
+        eval_model(model, validation_ds)
 
     torch.save(model, 'fc_model')
 
@@ -114,7 +123,7 @@ def main():
           train_ds=train_ds,
           validation_ds=validation_ds,
           optimizer=torch.optim.Adam(model.parameters(), 1e-4),
-          num_epochs=10)
+          num_epochs=20)
 
 
 if __name__ == '__main__':
