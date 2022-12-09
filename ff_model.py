@@ -68,6 +68,10 @@ def train(model, train_ds, validation_ds, optimizer, num_epochs: int):
                 validation_f1.append(f1_metric(outputs, labels).item())
         print(f'[{epoch + 1}, validation loss: {validation_loss / idx:.3f} f1: {np.mean(validation_f1)}')
 
+    torch.save(model, 'fc_model')
+
+    # model = torch.load(PATH)
+    # model.eval()
     print('Finished Training')
 
 
@@ -110,7 +114,7 @@ def main():
           train_ds=train_ds,
           validation_ds=validation_ds,
           optimizer=torch.optim.Adam(model.parameters(), 1e-4),
-          num_epochs=15)
+          num_epochs=10)
 
 
 if __name__ == '__main__':
