@@ -18,8 +18,9 @@ def parse_file(file_path, windows_size):
         new_sentence = []
         new_sentence_tags = []
         for row in f:
-            if row != '\t\n' and row != '\n':  # If still in the current sentence:
-                word_to_add = row.split("\t")[0]
+            #todo: deal with end of file dev.tagged!!!!
+            if row != '\t\n' and row != '\n' and row != '\ufeff':  # If still in the current sentence:
+                word_to_add = row.split("\t")[0].lower()
                 tag_to_add = row.split("\t")[1].replace('\n', '')
                 new_sentence.append(word_to_add)
                 new_sentence_tags.append(tag_to_add)

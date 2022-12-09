@@ -7,6 +7,8 @@ import pickle
 from sklearn import svm
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import f1_score
+from parser import parse_file
+
 
 def load_model():
     # WORD_2_VEC_PATH = 'word2vec-google-news-300'
@@ -17,7 +19,7 @@ def load_model():
 
 def embed(model, sen):
     representation = []
-    for word in sen.split():
+    for word in sen:
         if word not in model.key_to_index:
             print(f"The word: [{word}] is not an existing word in the model")
             vec = np.zeros(200)
@@ -28,27 +30,27 @@ def embed(model, sen):
     return representation
 
 
-def main(ds):
-    glove_model = load_model()
-    ds = [("am a student at the", 0), ("i ate sandwich yesterday and", 1)]
+def generate_ds(glove_model, string_data):
     x = []
     y = []
-    for (sample, label) in ds:
+    for (sample, label) in string_data:
         sentence_embeddings = embed(glove_model, sample)
         x.append(sentence_embeddings)
         y.append(label)
+    return x, y
 
+
+def train(train_set, validation_set):
+    glove_model = load_model()
+    x, y = generate_ds(glove_model, train_set)
     clf = svm.SVC()
     clf.fit(x, y)
-    sentence_embeddings = embed(glove_model, "I am hatoceleb here now")
-    out = clf.predict([sentence_embeddings])
-    print('Predictions:')
-    print(out)
 
-    y_true = [0, 1, 0, 1]
-    y_pred = [1, 1, 1, 0]
-    tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
-    f1 = f1_score(y_true, y_pred, average='macro')
+    x_validation, y_validation = generate_ds(glove_model, validation_set)
+    y_validation_pred = clf.predict(x_validation)
+
+    # tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+    f1 = f1_score(y_validation, y_validation_pred, average='macro')
     print(f'f1 score is {f1}')
 
     filename = 'svm_model.sav'
@@ -62,7 +64,20 @@ def main(ds):
     # print(result)
 
 
+def main():
+    train_file_path = r'./data/train.tagged'
+    validation_file_path = r'./data/dev.tagged'
+    windows_size = 2
+    train_set = parse_file(file_path=train_file_path,
+                           windows_size=windows_size)
+
+    validation_set = parse_file(file_path=validation_file_path,
+                                windows_size=windows_size)
+
+    # train_set = train_set[:1000]
+    # validation_set = validation_set[:1000]
+    train(train_set, validation_set)
 
 
 if __name__ == '__main__':
-    main('')
+    main()
