@@ -10,7 +10,7 @@ else num = 1
 from string import punctuation
 
 
-def parse_file(file_path, windows_size):
+def parse_file(file_path, windows_size,train):
     with open(file_path) as f:
 
         sentences = []  # Contains the final sentences without tags
@@ -57,10 +57,20 @@ def parse_file(file_path, windows_size):
 
                 dataset.append([words_in_the_tuple, tuple_tag])
 
-    return dataset
+    if train:
+        extended_ds = []
+        for sen, tag in dataset:
+            if tag == 1:
+                for i in range(15):
+                    extended_ds.append((sen, tag))
+            else:
+                extended_ds.append((sen, tag))
+        return extended_ds
+    else:
+        return dataset
 
 
-def comp_parse_file(file_path, windows_size):
+def comp_parse_file(file_path):
     with open(file_path) as f:
 
         sentences = []  # Contains the final sentences without tags

@@ -31,10 +31,12 @@ def main():
     validation_file_path = r'./data/dev.tagged'
     windows_size = 2
     train_set = parse_file(file_path=train_file_path,
-                           windows_size=windows_size)
+                           windows_size=windows_size,
+                           train=True)
 
     validation_set = parse_file(file_path=validation_file_path,
-                                windows_size=windows_size)
+                                windows_size=windows_size,
+                                train=False)
 
     # train_set = train_set[:1000]
     # validation_set = validation_set[:1000]

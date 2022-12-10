@@ -1,6 +1,7 @@
 from gensim import downloader, models
 import numpy as np
 
+
 def load_model():
     # WORD_2_VEC_PATH = 'word2vec-google-news-300'
     GLOVE_PATH = 'glove-twitter-200'
@@ -20,6 +21,7 @@ def embed(model, sen):
     representation = np.asarray(representation)
     return representation
 
+
 def comp_embed(model, sen):
     representation = []
     for word in sen:
@@ -32,6 +34,8 @@ def comp_embed(model, sen):
     representation = np.asarray(representation)
     return representation
 
+
+
 def generate_ds(glove_model, string_data, comp=False):
     x = []
     y = []
@@ -43,5 +47,3 @@ def generate_ds(glove_model, string_data, comp=False):
         x.append(sentence_embeddings)
         y.append(label)
     return x, y
-
-
