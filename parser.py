@@ -1,18 +1,5 @@
-"""
-Return a list containing tuples,
-each contains a target word and its context window
-for a given sentence
-(sentence, num)
-num = 0 if the center word does not have a label
-else num = 1
-"""
-
-from string import punctuation
-
-
-def parse_file(file_path, windows_size,train):
+def parse_file(file_path, windows_size, train):
     with open(file_path) as f:
-
         sentences = []  # Contains the final sentences without tags
         sentence_tags = []  # Contains the tags of each word in the sentences
         new_sentence = []
