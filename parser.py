@@ -1,11 +1,11 @@
-def parse_file(file_path, windows_size, train):
+def parse_file(file_path, windows_size, comp):
     with open(file_path, encoding='utf-8') as f:
         sentences = []  # Contains the final sentences without tags
         sentence_tags = []  # Contains the tags of each word in the sentences
         new_sentence = []
         new_sentence_tags = []
         for row in f:
-            if row != '\t\n' and row != '\n' and row != '\ufeff':  # If still in the current sentence:
+            if row != '\t\n' and row != '\n':  # If still in the current sentence:  and row != '\ufeff'
                 word_to_add = row.split("\t")[0].lower()
                 tag_to_add = row.split("\t")[1].replace('\n', '')
                 new_sentence.append(word_to_add)
@@ -43,7 +43,7 @@ def parse_file(file_path, windows_size, train):
 
                 dataset.append([words_in_the_tuple, tuple_tag])
 
-    if train:
+    if comp:
         extended_ds = []
         for sen, tag in dataset:
             if tag == 1:

@@ -1,4 +1,4 @@
-from gensim import downloader, models
+from gensim import downloader
 import numpy as np
 
 

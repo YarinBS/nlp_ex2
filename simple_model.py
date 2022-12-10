@@ -1,4 +1,4 @@
-from data_parser import parse_file
+from parser import parse_file
 from create_embedding import load_model, generate_ds
 from sklearn import svm
 from sklearn.metrics import f1_score
@@ -17,7 +17,7 @@ def train(train_set, validation_set):
     f1 = f1_score(y_validation, y_validation_pred, average='macro')
     print(f'f1 score is {f1}')
 
-    filename = 'svm_model.sav'
+    filename = 'models/svm_model.sav'
     pickle.dump(clf, open(filename, 'wb'))
 
     # load the model from disk
@@ -32,11 +32,11 @@ def main():
     windows_size = 2
     train_set = parse_file(file_path=train_file_path,
                            windows_size=windows_size,
-                           train=True)
+                           comp=False)
 
     validation_set = parse_file(file_path=validation_file_path,
                                 windows_size=windows_size,
-                                train=False)
+                                comp=False)
 
     # train_set = train_set[:1000]
     # validation_set = validation_set[:1000]
