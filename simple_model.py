@@ -1,4 +1,4 @@
-from parser import parse_file
+from data_parser import parse_file
 from create_embedding import load_model, generate_ds
 from sklearn import svm
 from sklearn.metrics import f1_score

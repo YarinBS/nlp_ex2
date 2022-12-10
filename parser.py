@@ -1,11 +1,10 @@
 def parse_file(file_path, windows_size, train):
-    with open(file_path) as f:
+    with open(file_path, encoding='utf-8') as f:
         sentences = []  # Contains the final sentences without tags
         sentence_tags = []  # Contains the tags of each word in the sentences
         new_sentence = []
         new_sentence_tags = []
         for row in f:
-            # todo: deal with end of file dev.tagged!!!!
             if row != '\t\n' and row != '\n' and row != '\ufeff':  # If still in the current sentence:
                 word_to_add = row.split("\t")[0].lower()
                 tag_to_add = row.split("\t")[1].replace('\n', '')
@@ -57,35 +56,35 @@ def parse_file(file_path, windows_size, train):
         return dataset
 
 
-def comp_parse_file(file_path):
-    with open(file_path) as f:
+def comp_parse_file(file_path, windows_size):
+    with open(file_path, encoding='utf-8') as f:
 
         sentences = []  # Contains the final sentences without tags
-        sentence_tags = []  # Contains the tags of each word in the sentences
         new_sentence = []
-        new_sentence_tags = []
         for row in f:
-            # todo: deal with end of file dev.tagged!!!!
-            if row != '\t\n' and row != '\n' and row != '\ufeff':  # If still in the current sentence:
-                word_to_add = row.split("\t")[0].lower()
-                tag_to_add = row.split("\t")[1].replace('\n', '')
+            if row != '\t\n' and row != '\n':  # If still in the current sentence:
+                word_to_add = row.replace('\n', '')
                 new_sentence.append(word_to_add)
-                new_sentence_tags.append(tag_to_add)
             else:
                 sentences.append(new_sentence)
-                sentence_tags.append(new_sentence_tags)
-                new_sentence, new_sentence_tags = [], []
+                new_sentence = []
 
         dataset = []
-        for sen, tags in zip(sentences, sentence_tags):
-            numeric_tags = [0 if t == 'O' else 1 for t in tags]
-            dataset.append([sen, numeric_tags])
+        for sen in sentences:
+            for i in range(windows_size, len(sen) - windows_size):
+
+                # Creating the context of the current word
+                words_in_the_tuple = []
+                for j in range(i - windows_size, i + windows_size + 1):
+                    words_in_the_tuple.append(sen[j])
+
+                dataset.append(words_in_the_tuple)
 
     return dataset
 
 
 def main():
-    file_path = r"./data/train.tagged"
+    file_path = r"./data/dev.tagged"
     windows_size = 0
     comp_parse_file(file_path, windows_size)
 
