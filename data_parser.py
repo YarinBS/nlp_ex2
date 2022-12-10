@@ -5,7 +5,7 @@ def parse_file(file_path, windows_size, comp):
         new_sentence = []
         new_sentence_tags = []
         for row in f:
-            if row != '\t\n' and row != '\n':  # If still in the current sentence:  and row != '\ufeff'
+            if row != '\t\n' and row != '\n' and not row.startswith('﻿'):  # If still in the current sentence:  and row != '\ufeff'
                 word_to_add = row.split("\t")[0].lower()
                 tag_to_add = row.split("\t")[1].replace('\n', '')
                 new_sentence.append(word_to_add)
@@ -86,7 +86,7 @@ def comp_parse_file(file_path, windows_size):
 def main():
     file_path = r"./data/dev.tagged"
     windows_size = 0
-    comp_parse_file(file_path, windows_size)
+    parse_file(file_path, windows_size, comp=False)
 
 
 if __name__ == '__main__':

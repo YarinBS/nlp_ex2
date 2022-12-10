@@ -9,7 +9,7 @@ import pickle
 
 def main():
     test_file_path = r'./data/test.untagged'
-    model_path = r'./svm_model.sav'
+    model_path = r'./models/svm_model.sav'
     windows_size = 2
 
     loaded_model = pickle.load(open(model_path, 'rb'))
@@ -19,7 +19,10 @@ def main():
 
     predictions = loaded_model.predict(x)
 
-    print(predictions)
+    with open(test_file_path) as f:
+        with open('test.tagged', 'a') as f2:
+            for word, pred in zip(f, predictions):
+                f2.write(f'{word}\t{pred}\n')
 
 
 if __name__ == '__main__':
