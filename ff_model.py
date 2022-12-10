@@ -1,12 +1,9 @@
 import torch
 from torch import nn
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import f1_score
 from torch.utils.data import DataLoader
 from data_parser import parse_file
 from create_embedding import load_model, generate_ds
-import torch.nn.functional as F
-from torchmetrics.classification import BinaryF1Score
-import numpy as np
 
 
 class Net(nn.Module):
