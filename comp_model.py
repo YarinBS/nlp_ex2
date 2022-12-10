@@ -17,7 +17,7 @@ def train(train_set, validation_set):
     f1 = f1_score(y_validation, y_validation_pred, average='macro')
     print(f'f1 score is {f1}')
 
-    filename = 'svm_model.sav'
+    filename = 'comp_svm_model.sav'
     pickle.dump(clf, open(filename, 'wb'))
 
     # load the model from disk
