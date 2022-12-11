@@ -12,6 +12,7 @@ def load_model():
 def embed(model, sen):
     representation = []
     for word in sen:
+        word = word.lower()
         if word not in model.key_to_index:
             print(f"The word: [{word}] is not an existing word in the model")
             vec = np.zeros(200)
