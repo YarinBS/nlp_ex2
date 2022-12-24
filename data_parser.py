@@ -5,7 +5,8 @@ def parse_file(file_path, windows_size, comp):
         new_sentence = []
         new_sentence_tags = []
         for row in f:
-            if row != '\t\n' and row != '\n' and not row.startswith('﻿'):  # If still in the current sentence:  and row != '\ufeff'
+            if row != '\t\n' and row != '\n' and not row.startswith(
+                    '﻿'):  # If still in the current sentence:  and row != '\ufeff'
                 word_to_add = row.split("\t")[0].lower()
                 tag_to_add = row.split("\t")[1].replace('\n', '')
                 new_sentence.append(word_to_add)
@@ -53,6 +54,41 @@ def parse_file(file_path, windows_size, comp):
                 extended_ds.append((sen, tag))
         return extended_ds
     else:
+        return dataset
+
+
+def parse_file_untagged(file_path, windows_size):
+    with open(file_path, encoding='utf-8') as f:
+        sentences = []  # Contains the final sentences without tags
+        new_sentence = []
+        for row in f:
+            if row != '\n':
+                word_to_add = row.replace('\n','').lower()
+                new_sentence.append(word_to_add)
+            else:
+                sentences.append(new_sentence)
+                new_sentence = []
+
+        for sentence in sentences:
+            # Adding astericks padding to the sentence
+            # Beginning of sentence:
+            for j in range(windows_size):
+                sentence.insert(0, '*')
+
+            # Sentence ending:
+            for j in range(windows_size):
+                sentence.append('*')
+
+        dataset = []
+        for sen in sentences:
+            for i in range(windows_size, len(sen) - windows_size):
+                # Creating the context of the current word
+                words_in_the_tuple = []
+                for j in range(i - windows_size, i + windows_size + 1):
+                    words_in_the_tuple.append(sen[j])
+
+                dataset.append(words_in_the_tuple)
+
         return dataset
 
 

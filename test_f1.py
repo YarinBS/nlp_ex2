@@ -31,28 +31,20 @@ def train(train_set, validation_set, test_set):
 
 
 def main():
-    train_file_path = r'./data/train.tagged'
-    validation_file_path = r'./data/dev.tagged'
-    test_set_path = r'./data/test.tagged.txt'
+    real_test_set_path = r'./data/test.tagged.txt'
+    generated_test_set_path = r'./data/test.tagged'
     windows_size = 3
-    train_set = parse_file(file_path=train_file_path,
-                           windows_size=windows_size,
-                           comp=True)
+    real_test_set = parse_file(file_path=real_test_set_path,
+                               windows_size=windows_size,
+                               comp=False)
 
-    validation_set = parse_file(file_path=validation_file_path,
-                                windows_size=windows_size,
-                                comp=True)
-
-    test_set = parse_file(file_path=test_set_path,
-                          windows_size=windows_size,
-                          comp=False)
-
-    # import random
-    # sampled_list = random.sample(test_set, 15000)
-    train_set.extend(validation_set)
-    # train_set = train_set[:1000]
-    # validation_set = validation_set[:1000]
-    train(train_set, validation_set, test_set)
+    generated_test_set = parse_file(file_path=generated_test_set_path,
+                                    windows_size=windows_size,
+                                    comp=False)
+    real_test_labels = [y for x,y in real_test_set]
+    generated_test_labels = [y for x,y in generated_test_set]
+    test_f1 = f1_score(real_test_labels, generated_test_labels)
+    print(f'f1 of generated test set: {test_f1:.3f}')
 
 
 if __name__ == '__main__':

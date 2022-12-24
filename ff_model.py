@@ -74,7 +74,7 @@ def train(model, train_ds, validation_ds, optimizer, num_epochs: int):
         running_loss = 0.0
         eval_model(model, validation_ds)
 
-    torch.save(model, 'fc_model')
+    torch.save(model, 'models/fc_model_comp')
 
     # model = torch.load(PATH)
     # model.eval()
@@ -103,10 +103,12 @@ def main():
     windows_size = 2
     glove_model = load_model()
     train_set = parse_file(file_path=train_file_path,
-                           windows_size=windows_size)
+                           windows_size=windows_size,
+                           comp=False)
 
     validation_set = parse_file(file_path=validation_file_path,
-                                windows_size=windows_size)
+                                windows_size=windows_size,
+                                comp=False)
 
     x_train, y_train = generate_ds(glove_model, train_set)
     x_validation, y_validation = generate_ds(glove_model, validation_set)
