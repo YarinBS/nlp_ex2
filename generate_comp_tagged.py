@@ -6,8 +6,8 @@ import pickle
 def main():
     test_file_path = r'./data/test.untagged'
     test_file_tagged_path = r'./data/test.tagged.txt'
-    model_path = r'./models/svm_model.sav'
-    windows_size = 1
+    model_path = r'./models/comp_svm_model.sav'
+    windows_size = 3
 
     loaded_model = pickle.load(open(model_path, 'rb'))
     data = parse_file_untagged(test_file_path, windows_size)
@@ -34,17 +34,6 @@ def main():
                         f2.write(row.replace("\n", "") + "\t" + 'other_class' + "\n")
                     else:
                         print('Problem')
-
-    # exit()
-    # with open(test_file_path, encoding='utf-8') as f:
-    #     with open('data/test.tagged', 'a', encoding='utf-8') as f2:
-    #         for word, pred in zip(f, predictions):
-    #             if pred == 0:
-    #                 f2.write(word.replace("\n", "") + "\t" + 'O' + "\n")
-    #             elif pred == 1:
-    #                 f2.write(word.replace("\n", "") + "\t" + 'other_class' + "\n")
-    #             else:
-    #                 print('Problem')
 
 
 if __name__ == '__main__':
